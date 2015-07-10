@@ -2,6 +2,7 @@
 
 namespace Liip\ImagineBundle\Imagine\Filter\Loader;
 
+use Imagine\Filter\Basic\Resize;
 use Imagine\Filter\Basic\Thumbnail;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
