@@ -19,7 +19,7 @@ class ThumbnailFilterLoader implements LoaderInterface
         }
 
         if (!empty($options['filter'])) {
-            $filter = constant('Imagine\Image\ImageInterface::FILTER_'.strtoupper($options['filter']));
+            $filter = constant('Imagine\Image\ImageInterface::FILTER_' . strtoupper($options['filter']));
         }
         if (empty($filter)) {
             $filter = ImageInterface::FILTER_UNDEFINED;
@@ -33,15 +33,22 @@ class ThumbnailFilterLoader implements LoaderInterface
 
         if (null === $width || null === $height) {
             if (null === $height) {
-                $height = (int) (($width / $origWidth) * $origHeight);
+                $height = (int)(($width / $origWidth) * $origHeight);
             } elseif (null === $width) {
-                $width = (int) (($height / $origHeight) * $origWidth);
+                $width = (int)(($height / $origHeight) * $origWidth);
             }
         }
 
         if (($origWidth > $width || $origHeight > $height)
             || (!empty($options['allow_upscale']) && ($origWidth !== $width || $origHeight !== $height))
         ) {
+            if (($origWidth < $width || $origHeight < $height)) {
+                // resize first
+                $ratio = max($width / $origWidth, $height / $origHeight);
+                $resizeFilter = new Resize(new Box(round($origWidth * $ratio), round($origHeight * $ratio)));
+                $image = $resizeFilter->apply($image);
+            }
+
             $filter = new Thumbnail(new Box($width, $height), $mode, $filter);
             $image = $filter->apply($image);
         }
